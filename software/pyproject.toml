@@ -141,8 +141,8 @@ radio-nrf24l01 = "glasgow.applet.radio.nrf24l01:RadioNRF24L01Applet"
 
 [project.urls]
 "Documentation" = "https://glasgow-embedded.org/"
-"Source Code" = "https://github.com/GlasgowEmbedded/glasgow"
-"Bug Tracker" = "https://github.com/GlasgowEmbedded/glasgow/issues"
+"Source Code" = "https://github.com/GlasgowEmbedded/Glasgow"
+"Bug Tracker" = "https://github.com/GlasgowEmbedded/Glasgow/issues"
 
 # Build system configuration
 

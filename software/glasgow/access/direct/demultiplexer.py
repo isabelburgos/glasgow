@@ -52,11 +52,11 @@ _max_packets_per_ep = 1024
 # To try and balance these effects, we choose a medium buffer size that should work well with most
 # applications. It's possible that this will need to become customizable later, but for now
 # a single fixed value works.
-_packets_per_xfer = 32
+_packets_per_xfer = 128#32
 
 # Queue as many transfers as we can, but no more than 16, as the returns beyond that point
 # are diminishing.
-_xfers_per_queue = min(16, _max_packets_per_ep // _packets_per_xfer)
+_xfers_per_queue = 16#min(16, _max_packets_per_ep // _packets_per_xfer)
 
 
 class DirectDemultiplexer(AccessDemultiplexer):
@@ -224,6 +224,7 @@ class DirectDemultiplexerInterface(AccessDemultiplexerInterface):
 
     async def _in_task(self):
         if self._read_buffer_size is not None:
+            await asyncio.sleep(0)
             async with self._in_pushback:
                 while len(self._in_buffer) > self._read_buffer_size:
                     self.logger.trace("FIFO: read pushback")
