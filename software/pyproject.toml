@@ -32,7 +32,7 @@ dependencies = [
   # `typing_extensions` provides shims for such features. It uses SemVer.
   "typing_extensions>=4.8,<5",
   # Amaranth is the core of the Glasgow software/gateware interoperability layer. It uses SemVer.
-  "amaranth>=0.4.0,<0.5",
+  "amaranth@ git+https://github.com/whitequark/amaranth@testbenchessssss",
   # `packaging` is used in the plugin system, `support.plugin`. It uses CalVer: the major version
   # is the two last digits of the year and the minor version is the release within that year.
   "packaging>=23.0",
@@ -140,8 +140,8 @@ radio-nrf24l01 = "glasgow.applet.radio.nrf24l01:RadioNRF24L01Applet"
 
 [project.urls]
 "Documentation" = "https://glasgow-embedded.org/"
-"Source Code" = "https://github.com/GlasgowEmbedded/glasgow"
-"Bug Tracker" = "https://github.com/GlasgowEmbedded/glasgow/issues"
+"Source Code" = "https://github.com/GlasgowEmbedded/Glasgow"
+"Bug Tracker" = "https://github.com/GlasgowEmbedded/Glasgow/issues"
 
 # Build system configuration
 
