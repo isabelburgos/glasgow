@@ -356,14 +356,15 @@ class DirectDemultiplexerInterface(AccessDemultiplexerInterface):
         # of data, as anything beyond that crosses the threshold of automatic submission.
         # So, we can simply submit the rest of data, which by definition fits into a single
         # transfer.
-        print(f"{len(self._out_tasks)=} < {_xfers_per_queue=}")
-        print(f"{len(self._out_buffer)=} > {self._out_packet_size * _packets_per_xfer=}")
-        #assert len(self._out_buffer) <= self._out_packet_size * _packets_per_xfer
-        if len(self._out_buffer) > self._out_packet_size * _packets_per_xfer:
-            ## oops, we're here
-            while len(self._out_tasks) < _xfers_per_queue and \
-                    len(self._out_buffer) >= self._out_threshold:
-                self._out_tasks.submit(self._out_task(self._out_slice()))
+        assert len(self._out_buffer) <= self._out_packet_size * _packets_per_xfer
+        # if len(self._out_buffer) > self._out_packet_size * _packets_per_xfer:
+        #     print(f"{len(self._out_buffer)=} > {self._out_packet_size * _packets_per_xfer=}")
+
+        #     ## oops, we're here
+        #     while len(self._out_tasks) < _xfers_per_queue and \
+        #             len(self._out_buffer) >= self._out_threshold:
+        #         self._out_tasks.submit(self._out_task(self._out_slice()))
+
 
 
         if self._out_buffer:
