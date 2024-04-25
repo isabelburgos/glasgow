@@ -17,7 +17,7 @@ class SimulationMultiplexer(AccessMultiplexer):
     def set_analyzer(self, analyzer):
         assert False
 
-    def claim_interface(self, applet, args, with_analyzer=False):
+    def claim_interface(self, applet, args, *, throttle=None, with_analyzer=False):
         assert not with_analyzer
 
         iface = SimulationMultiplexerInterface(applet)
