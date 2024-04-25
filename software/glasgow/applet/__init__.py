@@ -243,16 +243,21 @@ class GlasgowAppletTestCase(unittest.TestCase):
         self._parsed_args = parser.parse_args(args)
 
     def _prepare_simulation_target(self):
-        self.target = GlasgowSimulationTarget(multiplexer_cls=SimulationMultiplexer)
+        self.target = GlasgowSimulationTarget(revision=self.applet_cls.required_revision, 
+        multiplexer_cls=SimulationMultiplexer)
 
         self.device = GlasgowSimulationDevice(self.target)
         self.device.demultiplexer = SimulationDemultiplexer(self.device)
 
     def build_simulated_applet(self):
-        self.applet.build(self.target, self._parsed_args)
+        app = self.applet.build(self.target, self._parsed_args)
 
     async def run_simulated_applet(self):
         return await self.applet.run(self.device, self._parsed_args)
+    
+    async def interact_simulated_applet(self):
+        iface = await self.run_simulated_applet()
+        await self.applet.interact(self.device, self._parsed_args, iface)
 
     def _prepare_hardware_target(self, case, fixture, mode):
         assert mode in ("record", "replay")
@@ -302,12 +307,12 @@ def synthesis_test(case):
     return unittest.skipUnless(synthesis_available, "synthesis not available")(case)
 
 
-def applet_simulation_test(setup, args=[]):
+def applet_simulation_test(setup, args=[], interact=False):
     def decorator(case):
         @functools.wraps(case)
         def wrapper(self):
             access_args = SimulationArguments(self.applet)
-            self._prepare_applet_args(args, access_args)
+            self._prepare_applet_args(args, access_args, interact=interact)
             self._prepare_simulation_target()
 
             getattr(self, setup)()
@@ -321,7 +326,7 @@ def applet_simulation_test(setup, args=[]):
             vcd_name = f"{case.__name__}.vcd"
             with sim.write_vcd(vcd_name):
                 sim.run()
-            os.remove(vcd_name)
+            # os.remove(vcd_name)
 
         return wrapper
 
