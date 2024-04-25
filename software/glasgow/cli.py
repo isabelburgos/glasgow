@@ -464,8 +464,9 @@ class SubjectFilter:
     def filter(self, record):
         levelno = record.levelno
         for subject in self.subjects:
-            if record.msg.startswith(subject + ": "):
-                levelno = logging.DEBUG
+            if not record.msg==None:
+                if record.msg.startswith(subject + ": "):
+                    levelno = logging.DEBUG
         return levelno >= self.level
 
 
