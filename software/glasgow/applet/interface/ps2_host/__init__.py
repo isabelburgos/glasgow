@@ -97,10 +97,10 @@ class PS2Bus(Elaboratable):
 
         self.falling = Signal()
         self.rising  = Signal()
-        self.clock_i = Signal(reset=1)
-        self.clock_o = Signal(reset=1)
-        self.data_i  = Signal(reset=1)
-        self.data_o  = Signal(reset=1)
+        self.clock_i = Signal(init=1)
+        self.clock_o = Signal(init=1)
+        self.data_i  = Signal(init=1)
+        self.data_o  = Signal(init=1)
 
     def elaborate(self, platform):
         m = Module()
@@ -112,12 +112,12 @@ class PS2Bus(Elaboratable):
             self.pads.data_t.oe.eq(~self.data_o),
         ]
         m.submodules += [
-            FFSynchronizer(self.pads.clock_t.i, self.clock_i, reset=1),
-            FFSynchronizer(self.pads.data_t.i,  self.data_i,  reset=1),
+            FFSynchronizer(self.pads.clock_t.i, self.clock_i, init=1),
+            FFSynchronizer(self.pads.data_t.i,  self.data_i,  init=1),
         ]
 
-        clock_s = Signal(reset=1)
-        clock_r = Signal(reset=1)
+        clock_s = Signal(init=1)
+        clock_r = Signal(init=1)
         m.d.sync += [
             clock_s.eq(self.clock_i),
             clock_r.eq(clock_s),

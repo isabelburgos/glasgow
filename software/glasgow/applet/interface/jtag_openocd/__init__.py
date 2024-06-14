@@ -18,8 +18,8 @@ class JTAGOpenOCDSubtarget(Elaboratable):
         self.in_fifo    = in_fifo
         self.period_cyc = period_cyc
         self.us_cyc     = us_cyc
-        self.srst_z     = Signal(reset=0)
-        self.srst_o     = Signal(reset=0)
+        self.srst_z     = Signal(init=0)
+        self.srst_o     = Signal(init=0)
 
     def elaborate(self, platform):
         m = Module()

@@ -224,7 +224,7 @@ class _INFIFO(Elaboratable, FIFOInterface):
         self.w_en     = inner.w_en
         self.w_rdy    = inner.w_rdy
 
-        self.flush = Signal(reset=auto_flush)
+        self.flush = Signal(init=auto_flush)
 
         # This is a model of the IN FIFO buffer in the FX2. Keep in mind that it is legal
         # to assert PKTEND together with SLWR, and in that case PKTEND takes priority.
@@ -242,7 +242,7 @@ class _INFIFO(Elaboratable, FIFOInterface):
 
         if self.asynchronous:
             _flush_s = Signal()
-            m.submodules += FFSynchronizer(self.flush, _flush_s, reset=self.auto_flush)
+            m.submodules += FFSynchronizer(self.flush, _flush_s, init=self.auto_flush)
         else:
             _flush_s = self.flush
 

@@ -15,7 +15,7 @@ from ... import *
 class SWDProbeBus(Elaboratable):
     def __init__(self, pads):
         self._pads = pads
-        self.swclk = Signal(reset=1)
+        self.swclk = Signal(init=1)
         self.swdio_i = Signal()
         self.swdio_o = Signal()
         self.swdio_z = Signal()
@@ -42,8 +42,8 @@ class SWDOpenOCDSubtarget(Elaboratable):
         self.in_fifo    = in_fifo
         self.period_cyc = period_cyc
         self.us_cyc     = us_cyc
-        self.srst_z     = Signal(reset=0)
-        self.srst_o     = Signal(reset=0)
+        self.srst_z     = Signal(init=0)
+        self.srst_o     = Signal(init=0)
 
     def elaborate(self, platform):
         m = Module()

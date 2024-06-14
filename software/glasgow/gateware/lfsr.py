@@ -29,7 +29,7 @@ class LinearFeedbackShiftRegister(Elaboratable):
         self.taps   = taps
         self.reset  = reset
 
-        self.value  = Signal(degree, reset=reset)
+        self.value  = Signal(degree, init=reset)
 
     def elaborate(self, platform):
         m = Module()

@@ -24,8 +24,8 @@ class _FIFOReadPort(Elaboratable):
         self.width = fifo.width
         self.depth = fifo.depth
 
-        self._ctrl_en = Signal(reset=1)
-        self._data_en = Signal(reset=1)
+        self._ctrl_en = Signal(init=1)
+        self._data_en = Signal(init=1)
 
         self.r_en   = Signal()
         self.r_rdy  = Signal()
@@ -62,8 +62,8 @@ class _FIFOWritePort(Elaboratable):
         self.width = fifo.width
         self.depth = fifo.depth
 
-        self._ctrl_en = Signal(reset=1)
-        self._data_en = Signal(reset=1)
+        self._ctrl_en = Signal(init=1)
+        self._data_en = Signal(init=1)
 
         self.w_en   = Signal()
         self.w_rdy  = Signal()
