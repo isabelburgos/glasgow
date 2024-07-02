@@ -33,12 +33,18 @@ dependencies = [
   "typing_extensions>=4.8,<5",
   # Amaranth is the core of the Glasgow software/gateware interoperability layer. It uses SemVer.
 <<<<<<< HEAD
+<<<<<<< HEAD
   "amaranth>=0.5.1,<0.6",
 ||||||| parent of a20b9929 (change amaranth dependency to 0.5.x)
   "amaranth@ git+https://github.com/amaranth-lang/amaranth@main",
 =======
   "amaranth@ git+https://github.com/amaranth-lang/amaranth@v.0.5.x",
 >>>>>>> a20b9929 (change amaranth dependency to 0.5.x)
+||||||| parent of c641ee07 (update amaranth version)
+  "amaranth@ git+https://github.com/amaranth-lang/amaranth@v.0.5.x",
+=======
+  "amaranth@ git+https://github.com/amaranth-lang/amaranth@v0.5.x",
+>>>>>>> c641ee07 (update amaranth version)
   # `packaging` is used in the plugin system, `support.plugin`. It uses CalVer: the major version
   # is the two last digits of the year and the minor version is the release within that year.
   "packaging>=23.0",
