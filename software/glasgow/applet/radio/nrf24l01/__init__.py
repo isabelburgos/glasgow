@@ -6,6 +6,7 @@ import asyncio
 import logging
 import argparse
 from amaranth import *
+from amaranth.lib import io
 
 from ....support.logging import *
 from ....support.bits import *
@@ -198,8 +199,6 @@ class RadioNRF24L01Applet(GlasgowApplet):
          CIPO * * IRQ
     """
 
-    __pins = ("ce", "cs", "sck", "copi", "cipo", "irq")
-
     @classmethod
     def add_build_arguments(cls, parser, access):
         access.add_build_arguments(parser)
@@ -220,10 +219,17 @@ class RadioNRF24L01Applet(GlasgowApplet):
         dut_ce, self.__addr_dut_ce = target.registers.add_rw(1)
 
         self.mux_interface = iface = target.multiplexer.claim_interface(self, args)
-        pads = iface.get_deprecated_pads(args, pins=self.__pins)
+        ports=iface.get_port_group(
+                ce   = args.pin_ce,
+                cs   = args.pin_cs,
+                sck  = args.pin_sck,
+                copi = args.pin_copi,
+                cipo = args.pin_cipo,
+                irq  = args.pin_irq
+            )
 
         controller = SPIControllerSubtarget(
-            pads=pads,
+            ports=ports,
             out_fifo=iface.get_out_fifo(),
             in_fifo=iface.get_in_fifo(),
             period_cyc=math.ceil(target.sys_clk_freq / (args.frequency * 1000)),
@@ -232,7 +238,7 @@ class RadioNRF24L01Applet(GlasgowApplet):
             sck_edge="rising",
         )
 
-        subtarget = RadioNRF24L01Subtarget(controller, pads.ce_t, dut_ce)
+        subtarget = RadioNRF24L01Subtarget(controller, ports.ce, dut_ce)
 
         return iface.add_subtarget(subtarget)
 
