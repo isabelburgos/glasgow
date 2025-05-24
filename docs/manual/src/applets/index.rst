@@ -14,3 +14,4 @@ Applet index
     debug/index
     control/index
     internal/index
+    video/index

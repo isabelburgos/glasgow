@@ -2,8 +2,9 @@ import logging
 from amaranth import *
 from amaranth.lib import enum, data, io
 
-from ....gateware.pll import *
-from ... import *
+from glasgow.gateware.pll import *
+# from ... import *
+from glasgow.applet import GlasgowAppletV2
 
 
 class VGATestPattern(enum.Enum):
@@ -16,7 +17,7 @@ class VGATestPattern(enum.Enum):
         return self.value
 
 
-class VGAOutputSubtarget(Elaboratable):
+class VGAOutputComponent(Elaboratable):
     def __init__(self, ports, h_front, h_sync, h_back, h_active, v_front, v_sync, v_back, v_active,
                  pix_clk_freq, test_pattern=VGATestPattern.Quilt):
         self.ports    = ports
@@ -33,6 +34,8 @@ class VGAOutputSubtarget(Elaboratable):
         self.pix_clk_freq = pix_clk_freq
 
         self.test_pattern = test_pattern
+
+        super().__init__()
 
     def elaborate(self, platform):
         m = Module()
@@ -106,9 +109,8 @@ class VGAOutputSubtarget(Elaboratable):
 
         return m
 
-
 # video video graphics adapter is dumb, so the applet is just called VGAOutputApplet
-class VGAOutputApplet(GlasgowApplet):
+class VGAOutputApplet(GlasgowAppletV2):
     logger = logging.getLogger(__name__)
     help = "display video via VGA"
     description = """
@@ -134,7 +136,7 @@ class VGAOutputApplet(GlasgowApplet):
 
     @classmethod
     def add_build_arguments(cls, parser, access):
-        super().add_build_arguments(parser, access)
+        access.add_voltage_argument(parser)
 
         access.add_pins_argument(parser, "hs", default=True)
         access.add_pins_argument(parser, "vs", default=True)
@@ -180,8 +182,9 @@ class VGAOutputApplet(GlasgowApplet):
             "--pattern", metavar="PATTERN", type=VGATestPattern,
             choices=list(VGATestPattern), default=VGATestPattern.Quilt,
             help="use the specific test pattern (choices: %(choices)s, default: %(default)s)")
-
-    def build(self, target, args, test_pattern=True):
+        
+        
+    def build(self, args, test_pattern=True):
         h_dots  = args.h_active + args.h_front + args.h_sync + args.h_back
         v_lines = args.v_active + args.v_front + args.v_sync + args.v_back
         dots_per_frame = h_dots * v_lines
@@ -197,34 +200,32 @@ class VGAOutputApplet(GlasgowApplet):
         self.logger.info("%dx%d @ %.1f Hz: pixel clock %.3f MHz (ideal)",
             args.h_active, args.v_active, refresh_rate, pix_clk_freq / 1e6)
 
-        self.mux_interface = iface = target.multiplexer.claim_interface(self, args)
-        subtarget = iface.add_subtarget(VGAOutputSubtarget(
-            ports=iface.get_port_group(
+        with self.assembly.add_applet(self):
+            self.assembly.use_voltage(args.voltage)
+            ports = self.assembly.add_port_group(
                 hs = args.hs,
                 vs = args.vs,
                 r  = args.r,
                 g  = args.g,
                 b  = args.b
-            ),
-            h_front=args.h_front,
-            h_sync=args.h_sync,
-            h_back=args.h_back,
-            h_active=args.h_active,
-            v_front=args.v_front,
-            v_sync=args.v_sync,
-            v_back=args.v_back,
-            v_active=args.v_active,
-            pix_clk_freq=pix_clk_freq,
-            test_pattern=args.pattern,
-        ))
-        return subtarget
-
-    async def run(self, device, args):
-        return await device.demultiplexer.claim_interface(self, self.mux_interface, args)
-
-    async def interact(self, device, args, vga):
+            )
+            component = self.assembly.add_submodule(VGAOutputComponent(
+                ports=ports,
+                h_front=args.h_front,
+                h_sync=args.h_sync,
+                h_back=args.h_back,
+                h_active=args.h_active,
+                v_front=args.v_front,
+                v_sync=args.v_sync,
+                v_back=args.v_back,
+                v_active=args.v_active,
+                pix_clk_freq=pix_clk_freq,
+                test_pattern=args.pattern,
+            ))
+        
+    async def run(self, args):
         pass
-
+        
     @classmethod
     def tests(cls):
         from . import test
